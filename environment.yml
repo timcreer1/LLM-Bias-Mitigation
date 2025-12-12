@@ -1,0 +1,32 @@
+name: llm-bias
+channels:
+  - defaults
+  - pytorch
+  - conda-forge
+
+dependencies:
+  - python=3.10
+  - pytorch
+  - torchvision
+  - torchaudio
+  - cudatoolkit=11.8  # remove if using CPU only
+  - numpy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - tqdm
+  - jupyterlab
+  - pip
+  - pip:
+      - transformers
+      - datasets
+      - peft
+      - accelerate
+      - bitsandbytes
+      - sentencepiece
+      - evaluate
+      - rouge_score
+      - nltk
+      - protobuf
+      - huggingface_hub
