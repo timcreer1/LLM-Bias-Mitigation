@@ -52,7 +52,7 @@ bias-llm-fairness/
 │   ├── raw/               # empty – dataset auto-downloads
 │   ├── processed/
 │   └── counterfactual/
-│   └── README.md
+│   └── data_README.md
 │
 ├── notebooks/
 │   ├── 1-load-clean-eda.ipynb
