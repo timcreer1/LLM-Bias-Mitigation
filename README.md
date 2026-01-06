@@ -59,7 +59,7 @@ bias-llm-fairness/
 │   ├── 3-method-1-cda.ipynb
 │   ├── 4-method-2-few-shot.ipynb
 │   ├── 5-evaluation.ipynb
-│   └── outputs/           # saved figures and graphs
+│   └── outputs/           # saved figures and results tables
 │
 ├── src/
 │   ├── data_loader.py
