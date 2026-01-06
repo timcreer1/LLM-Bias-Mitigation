@@ -51,7 +51,6 @@ bias-llm-fairness/
 ├── data/
 │   ├── raw/               # empty – dataset auto-downloads
 │   ├── processed/
-│   └── counterfactual/
 │   └── data_README.md
 │
 ├── notebooks/
