@@ -45,7 +45,6 @@ bias-llm-fairness/
 ├── data/
 │   ├── raw/               # empty – dataset auto-downloads from URL
 │   ├── processed/
-│   └── counterfactual/
 │   └── README.md
 │
 ├── notebooks/
@@ -54,7 +53,7 @@ bias-llm-fairness/
 │   ├── 3-method-1-cda.ipynb
 │   ├── 4-method-2-few-shot.ipynb
 │   ├── 5-evaluation.ipynb
-│   └── figures/
+│   └── outputs/
 │
 ├── src/
 │   ├── data_loader.py
