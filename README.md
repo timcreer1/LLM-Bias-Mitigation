@@ -1,63 +1,188 @@
-# Data Directory
+# Bias Mitigation in Large Language Models (LLaMA-3.1 + BBQ Benchmark)
 
-This folder contains the data used in the **Bias Mitigation in Large Language Models (LLaMA-3.1 + BBQ Benchmark)** project.
+This repository investigates social bias in Large Language Models using the BBQ benchmark.  
+It provides a reproducible research pipeline including data loading, baseline evaluation, Counterfactual Data Augmentation (CDA), QLoRA fine-tuning, Few-Shot prompting, and structured fairness evaluation (sDIS, sAMB, AURC, log-odds).
 
-> ⚠️ **Important:** The BBQ dataset itself is **not** stored in this repository.  
-> It is automatically downloaded from Hugging Face when you run the notebooks or data loader script.
+> **Note:** This project was originally developed and executed on **Kaggle using 2× NVIDIA T4 GPUs**.  
+> To avoid unnecessary recomputation, **all experimental outputs are preserved directly inside the notebooks** rather than regenerated or exported to standalone result files.
 
 ---
 
-## 📥 Dataset Source
+## 📌 Project Overview
 
-This project uses the **BBQ (Bias Benchmark for Question Answering)** dataset:
+Large Language Models (LLMs) can unintentionally propagate or amplify social biases.  
+This project evaluates bias in **LLaMA-3.1-8B-Instruct** and explores two mitigation strategies:
 
-- Hugging Face: https://huggingface.co/datasets/nyu-mll/BBQ
+1. **Counterfactual Data Augmentation (CDA)**  
+2. **Few-Shot Prompting with Debiasing-Pattern Examples**
 
-The code loads the dataset using the `datasets` library, for example:
+All methods are evaluated on the **BBQ Benchmark**, covering nine sensitive demographic categories.
 
-```python
-from datasets import load_dataset
+---
 
-dataset = load_dataset("nyu-mll/BBQ", split="train")
+## ⚙️ Execution Environment (Important)
+
+- **Platform:** Kaggle Notebooks  
+- **Hardware:** 2 × NVIDIA T4 GPUs  
+- **Reason:** QLoRA fine-tuning and large-scale LLaMA inference are computationally expensive  
+
+As a result:
+- Notebooks are presented **as executed artefacts**
+- Outputs (tables, metrics, plots, examples) are intentionally kept **inside the `.ipynb` files**
+- Re-running the full pipeline locally is **not required** to understand the results
+
+---
+
+## 📂 Repository Structure
+
+```
+bias-llm-fairness/
+│
+├── README.md
+├── environment.yml
+├── LICENSE
+│
+├── data/
+│   ├── raw/               # empty – dataset auto-downloads from URL
+│   ├── processed/
+│   └── counterfactual/
+│   └── README.md
+│
+├── notebooks/
+│   ├── 1-load-clean-eda.ipynb
+│   ├── 2-baseline-model.ipynb
+│   ├── 3-method-1-cda.ipynb
+│   ├── 4-method-2-few-shot.ipynb
+│   ├── 5-evaluation.ipynb
+│   └── figures/
+│
+├── src/
+│   ├── data_loader.py
+│   ├── preprocess.py
+│   ├── cda.py
+│   ├── model_baseline.py
+│   ├── train_qlora.py
+│   ├── few_shot.py
+│   ├── evaluation.py
+│   └── utils.py
+│
+├── results/
+│   └── README.md          # intentionally empty – outputs live in notebooks
+│
+└── report/
+    ├── Bias_Mitigation_Report.pdf
+    └── references.bib
 ```
 
-No manual download is required for standard usage.
+---
+
+## 🗂️ About Results and Outputs
+
+To preserve compute resources and ensure transparency:
+
+- **All key outputs** (EDA plots, bias metrics, tables, example generations)  
+  are stored **directly inside the executed notebooks**
+- The `results/` directory is retained only for structural completeness
+- No outputs are missing — they are embedded where they were generated
+
+This approach is common for LLM projects that rely on expensive GPU workloads.
 
 ---
 
-## 📂 Expected Structure
+## 🚀 Methods Implemented
 
-At runtime, the project expects the following layout:
+### **1. Baseline Model Evaluation**
+- LLaMA-3.1-8B-Instruct evaluated directly on BBQ
+- Analysis includes:
+  - Ambiguous vs. non-ambiguous cases
+  - Target vs. non-target bias
+  - Incorrect inference patterns
 
-```bash
-data/
-├── raw/             # raw BBQ data (optional local cache)
-├── processed/       # cleaned / filtered splits used in experiments
-└── counterfactual/  # CDA-augmented data
+### **2. Counterfactual Data Augmentation (CDA)**
+- Identity-swapping via lexical templates
+- Expands dataset size and balances demographic attributes
+- Fine-tuned using **QLoRA** for parameter efficiency
+
+### **3. Few-Shot Debiasing**
+- Hand-crafted exemplars embedded in prompts
+- Introduces balanced reasoning patterns
+- Requires **no model training**
+
+---
+
+## 📊 Evaluation Metrics
+
+| Metric | Description |
+|------|-------------|
+| **sDIS** | Directional bias across demographic dimensions |
+| **sAMB** | Bias tendencies in ambiguous cases |
+| **AURC** | Area under the rejection curve (calibration) |
+| **Log-Odds Ratio** | Bias magnitude between identity groups |
+
+All metrics follow the BBQ benchmark definitions.
+
+---
+
+## 🧪 How to Explore the Project
+
+### Recommended approach
+Open the notebooks **in order**:
+
+1. `1-load-clean-eda.ipynb`  
+2. `2-baseline-model.ipynb`  
+3. `3-method-1-cda.ipynb`  
+4. `4-method-2-few-shot.ipynb`  
+5. `5-evaluation.ipynb`
+
+Each notebook:
+- Contains explanatory markdown
+- Preserves original outputs
+- Ends with a summary of findings
+
+---
+
+## 🧱 Dependencies
+
+- Python 3.10+
+- PyTorch
+- Hugging Face Transformers
+- datasets
+- PEFT (QLoRA)
+- accelerate
+- bitsandbytes
+- NumPy, Pandas
+- matplotlib, seaborn
+- scikit-learn
+- tqdm
+
+See **environment.yml** for the full specification.
+
+---
+
+## 📘 Report
+
+The full academic report—including methodology, experimental design, and discussion—is available in:
+
+```
+report/Bias_Mitigation_Report.pdf
 ```
 
-These folders may be created automatically by the notebooks or scripts.  
-They can also be created manually if you prefer.
+---
+
+## 📄 License
+
+MIT License (or adjust as desired).
 
 ---
 
-## 📴 Offline Usage (Optional)
-
-If you are working in an offline environment:
-
-1. Download the BBQ dataset in advance from Hugging Face.
-2. Place the files into:
-
-```bash
-data/raw/
-```
-
-3. Adjust paths in the notebooks or `src/data_loader.py` if needed.
+## 🤝 Acknowledgements
+- BBQ Benchmark authors  
+- Meta LLaMA-3.1  
+- Hugging Face ecosystem  
+- Kaggle GPU infrastructure  
+- University of Sydney — Advanced Machine Learning Coursework  
 
 ---
 
-## ℹ️ Notes
-
-- This repository intentionally omits large data files to keep the repo lightweight.
-- All **results and metrics** are preserved inside the notebook outputs rather than in separate data files.
-- For full experimental details, see the project `README.md` and `report/Bias_Mitigation_Report.pdf`.
+## ⭐ If you use this work
+Please cite or link to this repository.
